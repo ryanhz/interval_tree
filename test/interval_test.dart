@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 /*
  * Copyright (c) 2020 J-P Nurmi <jpnurmi@gmail.com>
  *

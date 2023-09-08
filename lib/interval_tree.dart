@@ -328,12 +328,12 @@ class IntervalTree with IterableMixin<Interval> {
       IntervalTree()..addAll(intervals);
 
   /// Adds an [interval] into this tree.
-  void add(dynamic? interval) {
+  void add(dynamic interval) {
     Interval? iv = _asInterval(interval);
     if (iv == null) return;
 
     bool joined = false;
-    BidirectionalIterator<Interval?> it = _tree.fromIterator(iv);
+    TreeIterator<Interval?> it = _tree.fromIterator(iv);
     while (it.movePrevious()) {
       final union = _tryJoin(it.current, iv);
       if (union == null) break;
@@ -365,7 +365,7 @@ class IntervalTree with IterableMixin<Interval> {
   void remove(dynamic interval) {
     final iv = _asInterval(interval);
 
-    BidirectionalIterator<Interval> it = _tree.fromIterator(iv!);
+    TreeIterator<Interval> it = _tree.fromIterator(iv!);
     while (it.movePrevious()) {
       final current = it.current;
       if (!_trySplit(it.current, iv)) break;
@@ -405,7 +405,7 @@ class IntervalTree with IterableMixin<Interval> {
     final result = IntervalTree();
     if (isEmpty || other.isEmpty) result;
     for (final iv in other) {
-      BidirectionalIterator<Interval> it = _tree.fromIterator(iv);
+      TreeIterator<Interval> it = _tree.fromIterator(iv);
       while (it.movePrevious() && iv.intersects(it.current)) {
         result.add(iv.intersection(it.current));
       }
@@ -420,7 +420,7 @@ class IntervalTree with IterableMixin<Interval> {
   @override
   bool contains(dynamic interval) {
     final iv = _asInterval(interval);
-    BidirectionalIterator<Interval?> it = _tree.fromIterator(iv!);
+    TreeIterator<Interval?> it = _tree.fromIterator(iv!);
     while (it.movePrevious() && iv.intersects(it.current!)) {
       if (it.current!.contains(iv)) return true;
     }
@@ -457,13 +457,13 @@ class IntervalTree with IterableMixin<Interval> {
 
   /// Returns a bidirectional iterator that allows iterating the intervals.
   @override
-  BidirectionalIterator<Interval> get iterator => _tree.iterator;
+  TreeIterator<Interval> get iterator => _tree.iterator;
 
   /// Returns a string representation of the tree.
   @override
   String toString() => 'IntervalTree' + super.toString();
 
-  Interval? _asInterval(dynamic? interval) {
+  Interval? _asInterval(dynamic interval) {
     if (interval is Iterable) {
       if (interval.length != 2 || interval.first is Iterable) {
         throw ArgumentError('$interval is not an interval');
